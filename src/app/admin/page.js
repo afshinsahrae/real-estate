@@ -8,6 +8,9 @@ import User from '@/models/User'
 import AdminPage from '@/template/AdminPage'
 import Profile from '@/models/Profile'
 
+export const dynamic = "force-dynamic";
+
+
 export const metadata = {
   title: "پنل ادمین | پروژه خرید و فروش ملک",
 };
@@ -34,3 +37,5 @@ if(!session) redirect("/signin")
 }
 
 export default Admin
+
+
