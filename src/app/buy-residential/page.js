@@ -24,20 +24,15 @@
 /////////
 
 
-
 import BuyResidentialsPage from "@/template/BuyResidentialsPage";
 
 // اجبار به Dynamic Rendering
 export const dynamic = "force-dynamic";
 
 export default async function BuyResidentials({ searchParams }) {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+  console.log("➡️ Fetching profiles from internal API: /api/profile");
 
-  console.log("➡️ Fetching profiles from:", `${baseUrl}/api/profile`);
-
-  const res = await fetch(`${baseUrl}/api/profile`, { cache: "no-store" });
+  const res = await fetch("/api/profile", { cache: "no-store" });
 
   // اگر ارتباط با سرور برقرار نشد
   if (!res.ok) {
@@ -73,8 +68,6 @@ export default async function BuyResidentials({ searchParams }) {
   // نمایش داده‌ها
   return <BuyResidentialsPage data={finalData} />;
 }
-
-
 
 
 
