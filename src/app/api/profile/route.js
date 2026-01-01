@@ -204,6 +204,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    console.log("➡️ GET /api/profile called");
     await connectDB();
 
     const profiles = await Profile.find({ published: true }).select("-userId");
@@ -211,7 +212,8 @@ export async function GET() {
 
     return NextResponse.json({ data: profiles }, { status: 200 });
   } catch (error) {
-    console.error("❌ GET /api/profile error:", error);
+    console.error("❌ GET /api/profile error:", error.message);
+    console.error("Stack trace:", error.stack);
     return NextResponse.json(
       { error: "مشکلی در سرور رخ داده است" },
       { status: 500 }
@@ -387,3 +389,7 @@ export async function PATCH(req) {
     );
   }
 }
+
+
+
+
