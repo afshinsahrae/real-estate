@@ -25,47 +25,36 @@
 
 
 import BuyResidentialsPage from "@/template/BuyResidentialsPage";
+import connectDB from "@/utils/connectDB";
+import Profile from "@/models/Profile";
 
 // اجبار به Dynamic Rendering
 export const dynamic = "force-dynamic";
 
 export default async function BuyResidentials({ searchParams }) {
-  const baseUrl =
-    process.env.NEXTAUTH_URL ||
-    process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000";
+  try {
+    console.log("➡️ Connecting to database...");
+    await connectDB();
 
-  console.log("➡️ Fetching profiles from:", `${baseUrl}/api/profile`);
+    console.log("➡️ Fetching published profiles from DB...");
+    const profiles = await Profile.find({ published: true }).select("-userId");
 
-  const res = await fetch(`${baseUrl}/api/profile`, { cache: "no-store" });
+    let finalData = profiles;
 
-  if (!res.ok) {
-    console.error("❌ Fetch error:", res.status, res.statusText);
-    return <h2>مشکلی در ارتباط با سرور رخ داده است</h2>;
-  }
+    if (searchParams?.category) {
+      console.log("ℹ️ Filtering by category:", searchParams.category);
+      finalData = finalData.filter((i) => i.category === searchParams.category);
+    }
 
-  const data = await res.json();
-  console.log("📦 API response:", JSON.stringify(data, null, 2));
+    if (finalData.length === 0) {
+      console.warn("⚠️ No profiles found after filtering");
+      return <h2>هیچ آگهی‌ای یافت نشد</h2>;
+    }
 
-  if (!data || data.error) {
-    console.error("❌ API returned error:", data?.error);
+    console.log("✅ Rendering BuyResidentialsPage with", finalData.length, "profiles");
+    return <BuyResidentialsPage data={finalData} />;
+  } catch (error) {
+    console.error("❌ Error in buy-residential page:", error.message);
     return <h2>مشکلی در سرور رخ داده است</h2>;
   }
-
-  let finalData = Array.isArray(data.data) ? data.data : [];
-
-  if (searchParams?.category) {
-    console.log("ℹ️ Filtering by category:", searchParams.category);
-    finalData = finalData.filter((i) => i.category === searchParams.category);
-  }
-
-  if (finalData.length === 0) {
-    console.warn("⚠️ No profiles found after filtering");
-    return <h2>هیچ آگهی‌ای یافت نشد</h2>;
-  }
-
-  console.log("✅ Rendering BuyResidentialsPage with", finalData.length, "profiles");
-
-  return <BuyResidentialsPage data={finalData} />;
 }
