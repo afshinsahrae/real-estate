@@ -3,6 +3,11 @@
 ##### A full‑featured real estate platform built with Next.js, allowing users to buy, rent, and list properties. Includes user and admin dashboards, authentication, and property management tools.
 
 ---
+### 🌐 Live Demo
+You can view the deployed version of the project here:  
+https://real-estate-afshinsahrae.vercel.app/
+
+---
 
 ### 🚀 Features
 
